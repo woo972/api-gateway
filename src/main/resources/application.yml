@@ -1,37 +1,57 @@
 server:
-    port: 8000
+  port: 8000
 
 eureka:
-    client:
-        register-with-eureka: true
-        fetch-registry: true
-        service-url:
-            defaultZone: http://localhost:8761/eureka
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://127.0.0.1:8761/eureka
 
 spring:
-    application:
-        name: api-gateway
-        # java code에 의해 정할 수 있다
-    cloud:
-        gateway:
-            default-filters:
-                - name : GlobalFilter
-                  args:
-                    baseMessage: this is global filter
-                    preFilter: true
-                    postFilter: true
+  profiles:
+    active: dev
 
-            routes:
-                - id: user-service
-                  uri: lb://USER-SERVICE
-                  predicates:
-                      - Path=/user-service/**
-                  filters:
+  application:
+    name: api-gateway
+
+  config:
+    import: configserver:http://127.0.0.1:8888
+
+  cloud:
+    gateway:
+      default-filters:
+        - name : GlobalFilter
+          args:
+            baseMessage: this is global filter
+            preFilter: true
+            postFilter: true
+
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+          filters:
 #                      - AddRequestHeader=userservice-request, request
 #                      - AddResponseHeader=userservice-response, response
-                      - name: CustomFilter
-                      - name: LoggingFilter
-                        args:
-                          baseMessage: this is logging filter
-                          preFilter: true
-                          postFilter: true
+#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: this is logging filter
+                preFilter: true
+                postFilter: true
+
+#        - id: user-service
+#          uri: lb://USER-SERVICE
+#          predicates:
+#            - Path=/user-service/actuator/**
+#            - Method=GET, POST
+#          filters:
+#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: refresh, health, beans, httptrace
