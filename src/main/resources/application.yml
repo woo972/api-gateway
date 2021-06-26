@@ -28,6 +28,14 @@ spring:
             postFilter: true
 
       routes:
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
+          predicates:
+            - Path=/catalog-service/**
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
