@@ -58,8 +58,8 @@ spring:
 #            - Method=GET, POST
 #          filters:
 #            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: refresh, health, beans, httptrace
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
