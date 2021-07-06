@@ -36,6 +36,7 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -58,14 +59,9 @@ spring:
             - Path=/user-service/**
             - Method=GET
           filters:
+            - AuthorizationHeaderFilter
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-            - name: CustomFilter
-            - name: LoggingFilter
-              args:
-                baseMessage: this is logging filter
-                preFilter: true
-                postFilter: true
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
